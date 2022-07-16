@@ -10,10 +10,12 @@ import {
   Put,
   HttpCode,
 } from '@nestjs/common';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 
+@ApiTags('artist')
 @Controller('artist')
 export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
@@ -30,12 +32,14 @@ export class ArtistsController {
     return this.artistsService.findOne(id);
   }
 
+  @ApiBody({ type: CreateArtistDto })
   @Post()
   @HttpCode(201)
   create(@Body(new ValidationPipe()) createArtistDto: CreateArtistDto) {
     return this.artistsService.create(createArtistDto);
   }
 
+  @ApiBody({ type: UpdateArtistDto })
   @Put(':id')
   @HttpCode(200)
   update(

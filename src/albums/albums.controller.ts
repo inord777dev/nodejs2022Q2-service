@@ -10,10 +10,12 @@ import {
   ParseUUIDPipe,
   ValidationPipe,
 } from '@nestjs/common';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 
+@ApiTags('album')
 @Controller('album')
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
@@ -30,12 +32,14 @@ export class AlbumsController {
     return this.albumsService.findOne(id);
   }
 
+  @ApiBody({ type: CreateAlbumDto })
   @Post()
   @HttpCode(201)
   create(@Body(new ValidationPipe()) createAlbumDto: CreateAlbumDto) {
     return this.albumsService.create(createAlbumDto);
   }
 
+  @ApiBody({ type: UpdateAlbumDto })
   @Put(':id')
   @HttpCode(200)
   update(

@@ -15,7 +15,9 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user')
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -35,6 +37,7 @@ export class UsersController {
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBody({ type: CreateUserDto })
   @Post()
   @HttpCode(201)
   create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
@@ -42,6 +45,7 @@ export class UsersController {
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBody({ type: UpdateUserDto })
   @Put(':id')
   @HttpCode(200)
   update(

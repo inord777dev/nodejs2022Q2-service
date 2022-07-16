@@ -13,7 +13,9 @@ import {
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('track')
 @Controller('track')
 export class TracksController {
   constructor(private readonly tracksService: TracksService) {}
@@ -30,12 +32,14 @@ export class TracksController {
     return this.tracksService.findOne(id);
   }
 
+  @ApiBody({ type: CreateTrackDto })
   @Post()
   @HttpCode(201)
   create(@Body(new ValidationPipe()) createTrackDto: CreateTrackDto) {
     return this.tracksService.create(createTrackDto);
   }
 
+  @ApiBody({ type: UpdateTrackDto })
   @Put(':id')
   @HttpCode(200)
   update(
