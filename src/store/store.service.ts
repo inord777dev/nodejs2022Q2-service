@@ -13,100 +13,113 @@ import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { User } from 'src/users/entities/user.entity';
 import { FavoritesRepsonse } from 'src/favorites/dto/response-favorite.dto';
 
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Favorite } from 'src/favorites/entities/favorite.entity';
+
 const MSG_COMPLETED = 'Completed successfully';
 @Injectable()
 export class StoreService {
-  getIndex(entyties: Album[] | Artist[] | Track[] | User[], id: string) {
-    const index = entyties.findIndex((x) => x.id === id);
-    if (index < 0) {
+  constructor(
+    // @InjectRepository(Album)
+    // private albumRepository: Repository<Album>,
+
+    // @InjectRepository(Artist)
+    // private artistRepository: Repository<Artist>,
+
+    // @InjectRepository(Favorite)
+    // private favoriteRepository: Repository<Favorite>,
+
+    // @InjectRepository(Track)
+    // private trackRepository: Repository<Track>,
+
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
+
+  getByIndex(
+    entyties:
+      | Repository<Album>
+      | Repository<Artist>
+      | Repository<Track>
+      | Repository<User>,
+    id: string,
+  ) {
+    const entity = entyties.findOne({ where: { id } });
+    if (!entity) {
       throw new HttpException(
-        "Record with this ID doesn't exist",
+        "Entity with this ID doesn't exist",
         HttpStatus.NOT_FOUND,
       );
     }
-    return index;
-  }
-
-  getByIndex(entyties: Album[] | Artist[] | Track[] | User[], id: string) {
-    return entyties[this.getIndex(entyties, id)];
-  }
-
-  getAlbums() {
-    return global.albums;
-  }
-
-  getAlbum(id: string) {
-    return this.getByIndex(global.albums, id);
-  }
-
-  createAlbum(createAlbumDto: CreateAlbumDto) {
-    const entity = new Album(createAlbumDto);
-    global.albums.push(entity);
     return entity;
   }
 
-  updateAlbum(id: string, updateAlbumDto: UpdateAlbumDto) {
-    const entity = this.getByIndex(global.albums, id) as Album;
-    Object.assign(entity, updateAlbumDto);
-    return entity;
+  async getAlbums() {
+    // const entities = await this.albumRepository.find();
+    // return entities;
   }
 
-  deleteAlbum(id: string) {
-    global.tracks.forEach((x, i, arr) => {
-      if (x.albumId === id) {
-        arr[i].albumId = null;
-      }
-    });
-    this.removeFavoritesByIndex(global.favorites.albums, id);
-    global.albums.splice(this.getIndex(global.albums, id), 1);
+  async getAlbum(id: string) {
+    // const entity = await this.getByIndex(this.albumRepository, id);
+    // return entity as Album;
   }
 
-  getArtists() {
-    return global.artists;
+  async createAlbum(createAlbumDto: CreateAlbumDto) {
+    // const entity = await this.albumRepository.create(createAlbumDto);
+    // return entity;
   }
 
-  getArtist(id: string) {
-    return this.getByIndex(global.artists, id);
+  async updateAlbum(id: string, updateAlbumDto: UpdateAlbumDto) {
+    // const entity = await this.getAlbum(id);
+    // Object.assign(entity, updateAlbumDto);
+    // this.albumRepository.save(entity);
+    // return entity;
   }
 
-  createArtist(createArtistDto: CreateArtistDto) {
-    const entity = new Artist(createArtistDto);
-    global.artists.push(entity);
-    return entity;
+  async deleteAlbum(id: string) {
+    // const entity = await this.getAlbum(id);
+    // this.albumRepository.delete(entity.id);
   }
 
-  updateArtist(id: string, updateArtistDto: UpdateArtistDto) {
-    const entity = this.getByIndex(global.artists, id) as Artist;
-    Object.assign(entity, updateArtistDto);
-    return entity;
+  async getArtists() {
+    // const entities = await this.artistRepository.find();
+    // return entities;
   }
 
-  deleteArtist(id: string) {
-    this.removeFavoritesByIndex(global.favorites.artists, id);
-    global.albums.forEach((x, i, arr) => {
-      if (x.artistId === id) {
-        arr[i].artistId = null;
-      }
-    });
-    global.tracks.forEach((x, i, arr) => {
-      if (x.artistId === id) {
-        arr[i].artistId = null;
-      }
-    });
-    global.artists.splice(this.getIndex(global.artists, id), 1);
+  async getArtist(id: string) {
+    // const entity = await this.getByIndex(this.artistRepository, id);
+    // return entity as Artist;
+  }
+
+  async createArtist(createArtistDto: CreateArtistDto) {
+    // const entity = await this.artistRepository.create(createArtistDto);
+    // return entity;
+  }
+
+  async updateArtist(id: string, updateArtistDto: UpdateArtistDto) {
+    // const entity = await this.getArtist(id);
+    // Object.assign(entity, updateArtistDto);
+    // this.artistRepository.save(entity);
+    // return entity;
+  }
+
+  async deleteArtist(id: string) {
+    // const entity = await this.getArtist(id);
+    // this.artistRepository.delete(entity.id);
   }
 
   getFavorites() {
     const response = new FavoritesRepsonse();
-    response.albums = global.favorites.albums.map(
-      (id) => this.getByIndex(global.albums, id) as Album,
-    );
-    response.artists = global.favorites.artists.map(
-      (id) => this.getByIndex(global.artists, id) as Artist,
-    );
-    response.tracks = global.favorites.tracks.map(
-      (id) => this.getByIndex(global.tracks, id) as Track,
-    );
+    // response.albums = global.favorites.albums.map(
+    //   (id) => this.getByIndex(global.albums, id) as Album,
+    // );
+    // response.artists = global.favorites.artists.map(
+    //   (id) => this.getByIndex(global.artists, id) as Artist,
+    // );
+    // response.tracks = global.favorites.tracks.map(
+    //   (id) => this.getByIndex(global.tracks, id) as Track,
+    // );
     return response;
   }
 
@@ -167,47 +180,50 @@ export class StoreService {
     return MSG_COMPLETED;
   }
 
-  getTracks() {
-    return global.tracks;
+  async getTracks() {
+    // const users = await this.trackRepository.find();
+    // return users;
   }
 
-  getTrack(id: string) {
-    return this.getByIndex(global.tracks, id);
+  async getTrack(id: string) {
+    // const entity = await this.getByIndex(this.trackRepository, id);
+    // return entity as Track;
   }
 
-  createTrack(createTrackDto: CreateTrackDto) {
-    const entity = new Track(createTrackDto);
-    global.tracks.push(entity);
+  async createTrack(createTrackDto: CreateTrackDto) {
+    // const entity = await this.trackRepository.create(createTrackDto);
+    // return entity;
+  }
+
+  async updateTrack(id: string, updateTrackDto: UpdateTrackDto) {
+    // const entity = await this.getTrack(id);
+    // Object.assign(entity, updateTrackDto);
+    // this.trackRepository.save(entity);
+    // return entity;
+  }
+
+  async deleteTrack(id: string) {
+    // const entity = await this.getTrack(id);
+    // this.trackRepository.delete(entity.id);
+  }
+
+  async getUsers() {
+    const users = await this.userRepository.find();
+    return users;
+  }
+
+  async getUser(id: string) {
+    const entity = await this.getByIndex(this.userRepository, id);
+    return entity as User;
+  }
+
+  async createUser(createUserDto: CreateUserDto) {
+    const entity = await this.userRepository.create(createUserDto);
     return entity;
   }
 
-  updateTrack(id: string, updateTrackDto: UpdateTrackDto) {
-    const entity = this.getByIndex(global.tracks, id) as Track;
-    Object.assign(entity, updateTrackDto);
-    return entity;
-  }
-
-  deleteTrack(id: string) {
-    this.removeFavoritesByIndex(global.favorites.tracks, id);
-    global.tracks.splice(this.getIndex(global.tracks, id), 1);
-  }
-
-  getUsers() {
-    return global.users;
-  }
-
-  getUser(id: string) {
-    return this.getByIndex(global.users, id);
-  }
-
-  createUser(createUserDto: CreateUserDto) {
-    const entity = new User(createUserDto);
-    global.users.push(entity);
-    return entity;
-  }
-
-  updateUser(id: string, updateUserDto: UpdateUserDto) {
-    const entity: User = this.getByIndex(global.users, id) as User;
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+    const entity = await this.getUser(id);
     if (
       entity.password !== updateUserDto.oldPassword ||
       entity.password === updateUserDto.newPassword
@@ -220,10 +236,12 @@ export class StoreService {
     entity.password = updateUserDto.newPassword;
     entity.version += 1;
     entity.updatedAt = Date.now();
+    this.userRepository.save(entity);
     return entity;
   }
 
-  deleteUser(id: string) {
-    global.users.splice(this.getIndex(global.users, id), 1);
+  async deleteUser(id: string) {
+    const entity = await this.getUser(id);
+    this.userRepository.delete(entity.id);
   }
 }
