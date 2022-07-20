@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('users')
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string; // uuid v4

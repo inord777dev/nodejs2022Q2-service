@@ -209,6 +209,7 @@ export class StoreService {
 
   async getUsers() {
     const users = await this.userRepository.find();
+    console.log(typeof users);
     return users;
   }
 
