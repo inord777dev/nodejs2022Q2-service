@@ -1,0 +1,32 @@
+version: '3'
+services: 
+  db:
+    image: postgres
+    restart: always
+    environment: 
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
+    container_name: postgres-db
+    ports: 
+      - "5432:5432"
+  nestjs:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    image: inord777dev/rss-nestjs-app:latest
+    environment: 
+      - PORT=${PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+    ports: 
+      - "4000:4000"
+    container_name: rss-nestjs-app
+    depends_on: 
+      - db
+    volumes: 
+      - .:/app
+      - /app/node_modules

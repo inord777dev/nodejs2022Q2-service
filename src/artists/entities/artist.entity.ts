@@ -1,6 +1,6 @@
 import { CreateArtistDto } from '../dto/create-artist.dto';
-import { randomUUID } from 'crypto';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity('artist')
 export class Artist {
@@ -14,7 +14,7 @@ export class Artist {
   grammy: boolean;
 
   constructor(createArtistDto: CreateArtistDto) {
-    this.id = randomUUID();
+    this.id = uuidv4();
     Object.assign(this, createArtistDto);
   }
 }

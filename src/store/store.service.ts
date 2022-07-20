@@ -21,17 +21,17 @@ const MSG_COMPLETED = 'Completed successfully';
 @Injectable()
 export class StoreService {
   constructor(
-    // @InjectRepository(Album)
-    // private albumRepository: Repository<Album>,
+    @InjectRepository(Album)
+    private albumRepository: Repository<Album>,
 
-    // @InjectRepository(Artist)
-    // private artistRepository: Repository<Artist>,
+    @InjectRepository(Artist)
+    private artistRepository: Repository<Artist>,
 
-    // @InjectRepository(Favorite)
-    // private favoriteRepository: Repository<Favorite>,
+    @InjectRepository(Favorite)
+    private favoriteRepository: Repository<Favorite>,
 
-    // @InjectRepository(Track)
-    // private trackRepository: Repository<Track>,
+    @InjectRepository(Track)
+    private trackRepository: Repository<Track>,
 
     @InjectRepository(User)
     private userRepository: Repository<User>,
@@ -56,57 +56,57 @@ export class StoreService {
   }
 
   async getAlbums() {
-    // const entities = await this.albumRepository.find();
-    // return entities;
+    const entities = await this.albumRepository.find();
+    return entities;
   }
 
   async getAlbum(id: string) {
-    // const entity = await this.getByIndex(this.albumRepository, id);
-    // return entity as Album;
+    const entity = await this.getByIndex(this.albumRepository, id);
+    return entity as Album;
   }
 
   async createAlbum(createAlbumDto: CreateAlbumDto) {
-    // const entity = await this.albumRepository.create(createAlbumDto);
-    // return entity;
+    const entity = await this.albumRepository.create(createAlbumDto);
+    return entity;
   }
 
   async updateAlbum(id: string, updateAlbumDto: UpdateAlbumDto) {
-    // const entity = await this.getAlbum(id);
-    // Object.assign(entity, updateAlbumDto);
-    // this.albumRepository.save(entity);
-    // return entity;
+    const entity = await this.getAlbum(id);
+    Object.assign(entity, updateAlbumDto);
+    this.albumRepository.save(entity);
+    return entity;
   }
 
   async deleteAlbum(id: string) {
-    // const entity = await this.getAlbum(id);
-    // this.albumRepository.delete(entity.id);
+    const entity = await this.getAlbum(id);
+    this.albumRepository.delete(entity.id);
   }
 
   async getArtists() {
-    // const entities = await this.artistRepository.find();
-    // return entities;
+    const entities = await this.artistRepository.find();
+    return entities;
   }
 
   async getArtist(id: string) {
-    // const entity = await this.getByIndex(this.artistRepository, id);
-    // return entity as Artist;
+    const entity = await this.getByIndex(this.artistRepository, id);
+    return entity as Artist;
   }
 
   async createArtist(createArtistDto: CreateArtistDto) {
-    // const entity = await this.artistRepository.create(createArtistDto);
-    // return entity;
+    const entity = await this.artistRepository.create(createArtistDto);
+    return entity;
   }
 
   async updateArtist(id: string, updateArtistDto: UpdateArtistDto) {
-    // const entity = await this.getArtist(id);
-    // Object.assign(entity, updateArtistDto);
-    // this.artistRepository.save(entity);
-    // return entity;
+    const entity = await this.getArtist(id);
+    Object.assign(entity, updateArtistDto);
+    this.artistRepository.save(entity);
+    return entity;
   }
 
   async deleteArtist(id: string) {
-    // const entity = await this.getArtist(id);
-    // this.artistRepository.delete(entity.id);
+    const entity = await this.getArtist(id);
+    this.artistRepository.delete(entity.id);
   }
 
   getFavorites() {
@@ -181,35 +181,34 @@ export class StoreService {
   }
 
   async getTracks() {
-    // const users = await this.trackRepository.find();
-    // return users;
+    const users = await this.trackRepository.find();
+    return users;
   }
 
   async getTrack(id: string) {
-    // const entity = await this.getByIndex(this.trackRepository, id);
-    // return entity as Track;
+    const entity = await this.getByIndex(this.trackRepository, id);
+    return entity as Track;
   }
 
   async createTrack(createTrackDto: CreateTrackDto) {
-    // const entity = await this.trackRepository.create(createTrackDto);
-    // return entity;
+    const entity = await this.trackRepository.create(createTrackDto);
+    return entity;
   }
 
   async updateTrack(id: string, updateTrackDto: UpdateTrackDto) {
-    // const entity = await this.getTrack(id);
-    // Object.assign(entity, updateTrackDto);
-    // this.trackRepository.save(entity);
-    // return entity;
+    const entity = await this.getTrack(id);
+    Object.assign(entity, updateTrackDto);
+    this.trackRepository.save(entity);
+    return entity;
   }
 
   async deleteTrack(id: string) {
-    // const entity = await this.getTrack(id);
-    // this.trackRepository.delete(entity.id);
+    const entity = await this.getTrack(id);
+    this.trackRepository.delete(entity.id);
   }
 
   async getUsers() {
     const users = await this.userRepository.find();
-    console.log(typeof users);
     return users;
   }
 

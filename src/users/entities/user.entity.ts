@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { randomUUID } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -30,7 +30,7 @@ export class User {
   }
 
   constructor(createUserDto: CreateUserDto) {
-    this.id = randomUUID();
+    this.id = uuidv4();
     Object.assign(this, createUserDto);
     this.version = 1;
     const now = Date.now();

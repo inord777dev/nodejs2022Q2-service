@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { CreateTrackDto } from '../dto/create-track.dto';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -20,7 +20,7 @@ export class Track {
   duration: number; // integer number
 
   constructor(createTrackDto: CreateTrackDto) {
-    this.id = randomUUID();
+    this.id = uuidv4();
     Object.assign(this, createTrackDto);
   }
 }

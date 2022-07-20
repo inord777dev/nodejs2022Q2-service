@@ -1,6 +1,6 @@
 import { CreateAlbumDto } from '../dto/create-album.dto';
-import { randomUUID } from 'crypto';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity('album')
 export class Album {
@@ -17,7 +17,7 @@ export class Album {
   artistId: string | null; // refers to Artist
 
   constructor(createAlbumDto: CreateAlbumDto) {
-    this.id = randomUUID();
+    this.id = uuidv4();
     Object.assign(this, createAlbumDto);
   }
 }
