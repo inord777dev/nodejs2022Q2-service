@@ -1,6 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CreateTrackDto } from '../dto/create-track.dto';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Artist } from 'src/artists/entities/artist.entity';
+import { Album } from 'src/albums/entities/album.entity';
 
 @Entity('track')
 export class Track {
@@ -10,11 +18,23 @@ export class Track {
   @Column()
   name: string;
 
-  @Column()
-  artistId: string | null; // refers to Artist
+  @ManyToOne(() => Artist, (artist) => artist.tracks, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'artistId' })
+  artist: Artist;
 
-  @Column()
-  albumId: string | null; // refers to Album
+  @Column({ nullable: true })
+  artistId: string | null;
+
+  @ManyToOne(() => Album, (album) => album.tracks, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'albumId' })
+  album: Album;
+
+  @Column({ nullable: true })
+  albumId: string | null;
 
   @Column()
   duration: number; // integer number

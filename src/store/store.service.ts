@@ -37,7 +37,7 @@ export class StoreService {
     private userRepository: Repository<User>,
   ) {}
 
-  getByIndex(
+  async getByIndex(
     entyties:
       | Repository<Album>
       | Repository<Artist>
@@ -45,7 +45,7 @@ export class StoreService {
       | Repository<User>,
     id: string,
   ) {
-    const entity = entyties.findOne({ where: { id } });
+    const entity = await entyties.findOne({ where: { id } });
     if (!entity) {
       throw new HttpException(
         "Entity with this ID doesn't exist",
@@ -67,6 +67,7 @@ export class StoreService {
 
   async createAlbum(createAlbumDto: CreateAlbumDto) {
     const entity = await this.albumRepository.create(createAlbumDto);
+    this.albumRepository.save(entity);
     return entity;
   }
 
@@ -79,7 +80,7 @@ export class StoreService {
 
   async deleteAlbum(id: string) {
     const entity = await this.getAlbum(id);
-    this.albumRepository.delete(entity.id);
+    await this.albumRepository.delete(entity.id);
   }
 
   async getArtists() {
@@ -94,6 +95,7 @@ export class StoreService {
 
   async createArtist(createArtistDto: CreateArtistDto) {
     const entity = await this.artistRepository.create(createArtistDto);
+    await this.artistRepository.save(entity);
     return entity;
   }
 
@@ -106,7 +108,7 @@ export class StoreService {
 
   async deleteArtist(id: string) {
     const entity = await this.getArtist(id);
-    this.artistRepository.delete(entity.id);
+    await this.artistRepository.delete(entity.id);
   }
 
   getFavorites() {
@@ -136,14 +138,14 @@ export class StoreService {
     entyties: Album[] | Artist[] | Track[] | User[],
     id: string,
   ) {
-    favorites.push(
-      entyties[
-        this.getFavoritesIndex(
-          entyties.map((x) => x.id),
-          id,
-        )
-      ].id,
-    );
+    // favorites.push(
+    //   entyties[
+    //     this.getFavoritesIndex(
+    //       entyties.map((x) => x.id),
+    //       id,
+    //     )
+    //   ].id,
+    // );
   }
 
   removeFavoritesByIndex(entyties: string[], id: string) {
@@ -192,6 +194,7 @@ export class StoreService {
 
   async createTrack(createTrackDto: CreateTrackDto) {
     const entity = await this.trackRepository.create(createTrackDto);
+    this.trackRepository.save(entity);
     return entity;
   }
 
@@ -204,7 +207,7 @@ export class StoreService {
 
   async deleteTrack(id: string) {
     const entity = await this.getTrack(id);
-    this.trackRepository.delete(entity.id);
+    await this.trackRepository.delete(entity.id);
   }
 
   async getUsers() {
@@ -219,6 +222,7 @@ export class StoreService {
 
   async createUser(createUserDto: CreateUserDto) {
     const entity = await this.userRepository.create(createUserDto);
+    this.userRepository.save(entity);
     return entity;
   }
 
@@ -242,6 +246,6 @@ export class StoreService {
 
   async deleteUser(id: string) {
     const entity = await this.getUser(id);
-    this.userRepository.delete(entity.id);
+    await this.userRepository.delete(entity.id);
   }
 }
