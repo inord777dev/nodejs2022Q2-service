@@ -67,14 +67,14 @@ export class StoreService {
 
   async createAlbum(createAlbumDto: CreateAlbumDto) {
     const entity = await this.albumRepository.create(createAlbumDto);
-    this.albumRepository.save(entity);
+    await this.albumRepository.save(entity);
     return entity;
   }
 
   async updateAlbum(id: string, updateAlbumDto: UpdateAlbumDto) {
     const entity = await this.getAlbum(id);
     Object.assign(entity, updateAlbumDto);
-    this.albumRepository.save(entity);
+    await this.albumRepository.save(entity);
     return entity;
   }
 
@@ -102,7 +102,7 @@ export class StoreService {
   async updateArtist(id: string, updateArtistDto: UpdateArtistDto) {
     const entity = await this.getArtist(id);
     Object.assign(entity, updateArtistDto);
-    this.artistRepository.save(entity);
+    await this.artistRepository.save(entity);
     return entity;
   }
 
@@ -194,14 +194,14 @@ export class StoreService {
 
   async createTrack(createTrackDto: CreateTrackDto) {
     const entity = await this.trackRepository.create(createTrackDto);
-    this.trackRepository.save(entity);
+    await this.trackRepository.save(entity);
     return entity;
   }
 
   async updateTrack(id: string, updateTrackDto: UpdateTrackDto) {
     const entity = await this.getTrack(id);
     Object.assign(entity, updateTrackDto);
-    this.trackRepository.save(entity);
+    await this.trackRepository.save(entity);
     return entity;
   }
 
@@ -222,7 +222,11 @@ export class StoreService {
 
   async createUser(createUserDto: CreateUserDto) {
     const entity = await this.userRepository.create(createUserDto);
-    this.userRepository.save(entity);
+    entity.version = 1;
+    const now = Date.now();
+    entity.createdAt = now;
+    entity.updatedAt = now;
+    await this.userRepository.save(entity);
     return entity;
   }
 
@@ -240,7 +244,7 @@ export class StoreService {
     entity.password = updateUserDto.newPassword;
     entity.version += 1;
     entity.updatedAt = Date.now();
-    this.userRepository.save(entity);
+    await this.userRepository.save(entity);
     return entity;
   }
 

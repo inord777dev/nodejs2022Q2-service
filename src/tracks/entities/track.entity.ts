@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
-import { CreateTrackDto } from '../dto/create-track.dto';
 import {
   Column,
   Entity,
@@ -18,29 +16,24 @@ export class Track {
   @Column()
   name: string;
 
+  @Column()
+  duration: number; // integer number
+
   @ManyToOne(() => Artist, (artist) => artist.tracks, {
     onDelete: 'SET NULL',
   })
-  @JoinColumn({ name: 'artistId' })
+  @JoinColumn()
   artist: Artist;
 
   @Column({ nullable: true })
-  artistId: string | null;
+  artistId: string;
 
   @ManyToOne(() => Album, (album) => album.tracks, {
     onDelete: 'SET NULL',
   })
-  @JoinColumn({ name: 'albumId' })
+  @JoinColumn()
   album: Album;
 
   @Column({ nullable: true })
-  albumId: string | null;
-
-  @Column()
-  duration: number; // integer number
-
-  constructor(createTrackDto: CreateTrackDto) {
-    this.id = uuidv4();
-    Object.assign(this, createTrackDto);
-  }
+  albumId: string;
 }

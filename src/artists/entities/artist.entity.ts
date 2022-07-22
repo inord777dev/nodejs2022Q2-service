@@ -1,6 +1,4 @@
-import { CreateArtistDto } from '../dto/create-artist.dto';
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import { Album } from 'src/albums/entities/album.entity';
 import { Track } from 'src/tracks/entities/track.entity';
 
@@ -20,9 +18,4 @@ export class Artist {
 
   @OneToMany(() => Track, (track) => track.artist)
   tracks: Track[];
-
-  constructor(createArtistDto: CreateArtistDto) {
-    this.id = uuidv4();
-    Object.assign(this, createArtistDto);
-  }
 }

@@ -1,6 +1,4 @@
 import { Exclude } from 'class-transformer';
-import { v4 as uuidv4 } from 'uuid';
-import { CreateUserDto } from '../dto/create-user.dto';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user')
@@ -23,18 +21,4 @@ export class User {
 
   @Column()
   updatedAt: number; // timestamp of last update
-
-  toResponse() {
-    const { id, login } = this;
-    return { id, login };
-  }
-
-  constructor(createUserDto: CreateUserDto) {
-    this.id = uuidv4();
-    Object.assign(this, createUserDto);
-    this.version = 1;
-    const now = Date.now();
-    this.createdAt = now;
-    this.updatedAt = now;
-  }
 }
