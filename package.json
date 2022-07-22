@@ -19,7 +19,14 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm:create": "npm run typeorm -- migration:create ./dist//migrations/BaseMigration -o",
+    "typeorm:generate": "npm run typeorm -- migration:generate ./dist/migrations/BaseMigration -d ./dist/dataSources.js -o",
+    "typeorm:run": "npm run typeorm -- migration:run -d ./dist/dataSources.js",
+    "typeorm:sync": "npm run typeorm -- schema:sync -d ./dist/dataSources.js",
+    "typeorm:drop": "npm run typeorm schema:drop",
+    "typeorm:new": "npm run build && npm run typeorm:create && npm run typeorm:generate && npm run start"
+    
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
