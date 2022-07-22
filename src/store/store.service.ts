@@ -223,9 +223,9 @@ export class StoreService {
   async createUser(createUserDto: CreateUserDto) {
     const entity = await this.userRepository.create(createUserDto);
     entity.version = 1;
-    const now = Date.now();
-    entity.createdAt = now;
-    entity.updatedAt = now;
+    // const now = Date.now();
+    // entity.createdAt = now;
+    // entity.updatedAt = now;
     await this.userRepository.save(entity);
     return entity;
   }
@@ -242,8 +242,8 @@ export class StoreService {
       );
     }
     entity.password = updateUserDto.newPassword;
-    entity.version += 1;
-    entity.updatedAt = Date.now();
+    // entity.version += 1;
+    // entity.updatedAt = Date.now();
     await this.userRepository.save(entity);
     return entity;
   }

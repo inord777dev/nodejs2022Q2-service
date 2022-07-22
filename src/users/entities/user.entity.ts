@@ -1,5 +1,13 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  Timestamp,
+  UpdateDateColumn,
+  VersionColumn,
+} from 'typeorm';
 
 @Entity('user')
 export class User {
@@ -13,12 +21,28 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column()
+  @VersionColumn()
   version: number; // integer number, increments on update
 
-  @Column()
+  @CreateDateColumn({
+    transformer: {
+      to: (value: Date) => value,
+      from: (value: Date) => value.getTime(),
+    },
+  })
   createdAt: number; // timestamp of creation
 
-  @Column()
+  @UpdateDateColumn({
+    transformer: {
+      to: (value: Date) => value,
+      from: (value: Date) => value.getTime(),
+    },
+  })
   updatedAt: number; // timestamp of last update
+
+  toResponse(): User {
+    const response = new User();
+    Object.assign(response, this);
+    return new User();
+  }
 }
