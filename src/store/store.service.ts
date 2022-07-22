@@ -111,74 +111,118 @@ export class StoreService {
     await this.artistRepository.delete(entity.id);
   }
 
-  getFavorites() {
+  async findFavorites() {
+    const favorites = await this.favoriteRepository.find({
+      relations: ['albums', 'artists', 'tracks'],
+    });
+    return favorites;
+  }
+
+  async findFavorite() {
+    const favorites = await this.findFavorites();
+    return favorites.length
+      ? favorites[0]
+      : await this.favoriteRepository.create({
+          albums: [],
+          artists: [],
+          tracks: [],
+        } as Favorite);
+  }
+
+  async getFavorites() {
+    const favorites = await this.findFavorites();
     const response = new FavoritesRepsonse();
-    // response.albums = global.favorites.albums.map(
-    //   (id) => this.getByIndex(global.albums, id) as Album,
-    // );
-    // response.artists = global.favorites.artists.map(
-    //   (id) => this.getByIndex(global.artists, id) as Artist,
-    // );
-    // response.tracks = global.favorites.tracks.map(
-    //   (id) => this.getByIndex(global.tracks, id) as Track,
-    // );
+    if (favorites.length) {
+      const favorite = favorites[0];
+      response.albums = favorite.albums.map((x) => x as Album);
+      response.artists = favorite.artists.map((x) => x as Artist);
+      response.tracks = favorite.tracks.map((x) => x as Track);
+    }
     return response;
   }
 
-  getFavoritesIndex(entyties: string[], id: string, useExeption = true) {
-    const index = entyties.findIndex((x) => x === id);
-    if (index < 0 && useExeption) {
+  async fineFavoriteEntityByIndex(
+    entities: Repository<Album> | Repository<Artist> | Repository<Track>,
+    id: string,
+    useExeption = true,
+  ) {
+    const entity = await entities.findOne({ where: { id } });
+    if (!entity && useExeption) {
       throw new HttpException('ID not found', HttpStatus.UNPROCESSABLE_ENTITY);
     }
-    return index;
+    return entity;
   }
 
-  addFavoritesByIndex(
-    favorites: string[],
-    entyties: Album[] | Artist[] | Track[] | User[],
-    id: string,
-  ) {
-    // favorites.push(
-    //   entyties[
-    //     this.getFavoritesIndex(
-    //       entyties.map((x) => x.id),
-    //       id,
-    //     )
-    //   ].id,
-    // );
+  removeFavoriteByIndex(entities: Album[] | Artist[] | Track[], id: string) {
+    const index = entities.findIndex((x) => x.id === id);
+    if (index >= 0) {
+      entities.splice(index, 1);
+    }
   }
 
-  removeFavoritesByIndex(entyties: string[], id: string) {
-    entyties.splice(this.getFavoritesIndex(entyties, id, false), 1);
+  async addFavorites(entity: Album | Artist | Track) {
+    const favorite = await this.findFavorite();
+    if (entity instanceof Album) {
+      favorite.albums.push(entity);
+    } else if (entity instanceof Artist) {
+      favorite.artists.push(entity);
+    } else if (entity instanceof Track) {
+      favorite.tracks.push(entity);
+    }
+    await this.favoriteRepository.save(favorite);
   }
 
-  addFavoritesAlbum(id: string) {
-    this.addFavoritesByIndex(global.favorites.albums, global.albums, id);
+  async removeFavorites(entity: Album | Artist | Track) {
+    const favorite = await this.findFavorite();
+    if (entity instanceof Album) {
+      this.removeFavoriteByIndex(favorite.albums, entity.id);
+    } else if (entity instanceof Artist) {
+      this.removeFavoriteByIndex(favorite.artists, entity.id);
+    } else if (entity instanceof Track) {
+      this.removeFavoriteByIndex(favorite.tracks, entity.id);
+    }
+    await this.favoriteRepository.save(favorite);
+  }
+
+  async addFavoritesAlbum(id: string) {
+    await this.addFavorites(
+      await this.fineFavoriteEntityByIndex(this.albumRepository, id),
+    );
     return MSG_COMPLETED;
   }
 
-  addFavoritesArtist(id: string) {
-    this.addFavoritesByIndex(global.favorites.artists, global.artists, id);
+  async addFavoritesArtist(id: string) {
+    await this.addFavorites(
+      await this.fineFavoriteEntityByIndex(this.artistRepository, id),
+    );
     return MSG_COMPLETED;
   }
 
-  addFavoritesTrack(id: string) {
-    this.addFavoritesByIndex(global.favorites.tracks, global.tracks, id);
+  async addFavoritesTrack(id: string) {
+    await this.addFavorites(
+      await this.fineFavoriteEntityByIndex(this.trackRepository, id),
+    );
     return MSG_COMPLETED;
   }
 
-  removeFavoritesAlbum(id: string) {
-    this.removeFavoritesByIndex(global.favorites.albums, id);
+  async removeFavoritesAlbum(id: string) {
+    await this.removeFavorites(
+      await this.fineFavoriteEntityByIndex(this.albumRepository, id),
+    );
     return MSG_COMPLETED;
   }
 
-  removeFavoritesArtist(id: string) {
-    this.removeFavoritesByIndex(global.favorites.artists, id);
+  async removeFavoritesArtist(id: string) {
+    await this.removeFavorites(
+      await this.fineFavoriteEntityByIndex(this.artistRepository, id),
+    );
     return MSG_COMPLETED;
   }
 
-  removeFavoritesTrack(id: string) {
-    this.removeFavoritesByIndex(global.favorites.tracks, id);
+  async removeFavoritesTrack(id: string) {
+    await this.removeFavorites(
+      await this.fineFavoriteEntityByIndex(this.trackRepository, id),
+    );
     return MSG_COMPLETED;
   }
 

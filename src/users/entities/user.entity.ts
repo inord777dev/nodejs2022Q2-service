@@ -4,7 +4,6 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  Timestamp,
   UpdateDateColumn,
   VersionColumn,
 } from 'typeorm';
@@ -40,9 +39,6 @@ export class User {
   })
   updatedAt: number; // timestamp of last update
 
-  toResponse(): User {
-    const response = new User();
-    Object.assign(response, this);
-    return new User();
-  }
+  // @OneToMany(() => Favorite, (favorite) => favorite.user)
+  // favorites: Favorite[];
 }

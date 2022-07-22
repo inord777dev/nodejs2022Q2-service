@@ -5,12 +5,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const port = process.env.PORT || 4000;
 
-global.favorites = {
-  albums: [],
-  artists: [],
-  tracks: [],
-};
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
