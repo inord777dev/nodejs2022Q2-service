@@ -10,11 +10,14 @@ services:
     container_name: postgres-db
     ports: 
       - "5432:5432"
+    networks:
+      - backend
   nestjs:
     build: 
       context: .
       dockerfile: ./Dockerfile
     image: inord777dev/rss-nestjs-app:latest
+    restart: always
     environment: 
       - PORT=${PORT}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -24,9 +27,17 @@ services:
       - POSTGRES_PORT=${POSTGRES_PORT}
     ports: 
       - "4000:4000"
+    networks:
+      - frontend
+      - backend
     container_name: rss-nestjs-app
     depends_on: 
       - db
     volumes: 
       - .:/app
       - /app/node_modules
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge

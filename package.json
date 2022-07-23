@@ -25,8 +25,8 @@
     "typeorm:run": "npm run typeorm -- migration:run -d ./dist/dataSources.js",
     "typeorm:sync": "npm run typeorm -- schema:sync -d ./dist/dataSources.js",
     "typeorm:drop": "npm run typeorm schema:drop",
-    "typeorm:new": "npm run build && npm run typeorm:create && npm run typeorm:generate && npm run start"
-    
+    "typeorm:new": "npm run build && npm run typeorm:create && npm run typeorm:generate && npm run start",
+    "docker:scan": "docker scan --file Dockerfile"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
