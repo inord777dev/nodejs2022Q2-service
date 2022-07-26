@@ -12,6 +12,8 @@ services:
       - "5432:5432"
     networks:
       - backend
+    volumes: 
+      - db:/var/lib/postgresql/data
   nestjs:
     build: 
       context: .
@@ -42,3 +44,6 @@ networks:
     driver: bridge
   backend:
     driver: bridge
+volumes:
+  db:
+    driver: local
