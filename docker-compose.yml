@@ -17,6 +17,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     image: inord777dev/rss-nestjs-app:latest
+    command: npm run start:dev
     restart: always
     environment: 
       - PORT=${PORT}
