@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateAlbumDto } from 'src/albums/dto/create-album.dto';
 import { UpdateAlbumDto } from 'src/albums/dto/update-album.dto';
 import { Album } from 'src/albums/entities/album.entity';
@@ -16,6 +21,8 @@ import { FavoritesRepsonse } from 'src/favorites/dto/response-favorite.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Favorite } from 'src/favorites/entities/favorite.entity';
+import { SignInDto } from 'src/auth/dto/singIn.dto';
+import { RefreshDto } from 'src/auth/dto/refresh.dto';
 
 const MSG_COMPLETED = 'Completed successfully';
 @Injectable()
@@ -35,7 +42,7 @@ export class StoreService {
 
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async getByIndex(
     entyties:
@@ -123,10 +130,10 @@ export class StoreService {
     return favorites.length
       ? favorites[0]
       : await this.favoriteRepository.create({
-          albums: [],
-          artists: [],
-          tracks: [],
-        } as Favorite);
+        albums: [],
+        artists: [],
+        tracks: [],
+      } as Favorite);
   }
 
   async getFavorites() {
@@ -262,6 +269,23 @@ export class StoreService {
   async getUser(id: string) {
     const entity = await this.getByIndex(this.userRepository, id);
     return entity as User;
+  }
+
+  async login(signInDto: SignInDto) {
+    const user = await this.userRepository.findOne({
+      where: { login: signInDto.login },
+    });
+    if (!user || user.password !== signInDto.password) {
+      throw new UnauthorizedException();
+    }
+    return user;
+  }
+
+  async refreshToken(refreshDto: RefreshDto) {
+    return {
+      accessToken: '',
+      refreshToken: '',
+    };
   }
 
   async createUser(createUserDto: CreateUserDto) {
