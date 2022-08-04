@@ -14,7 +14,7 @@ export class AuthService {
   }
 
   signUp(login: string, password: string) {
-    return this.storeService.createUser({ login, password });
+    return this.storeService.createUser(login, password);
   }
 
   async signIn(login: string, password: string) {

@@ -22,6 +22,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Favorite } from 'src/favorites/entities/favorite.entity';
 
+import * as bcrypt from 'bcrypt';
+
 const MSG_COMPLETED = 'Completed successfully';
 @Injectable()
 export class StoreService {
@@ -277,13 +279,16 @@ export class StoreService {
 
   async validate(login: string, password: string) {
     const user = await this.getUserByLogin(login);
-    if (!user || user.password !== password) {
+    if (!user || (await bcrypt.compare(user.password, password))) {
       throw new UnauthorizedException();
     }
     return user;
   }
 
-  async createUser(createUserDto: CreateUserDto) {
+  async createUser(login: string, password: string) {
+    const saltRounds = 10;
+    const hash = await bcrypt.hash(password, saltRounds);
+    const createUserDto: CreateUserDto = { login, password: hash };
     const entity = await this.userRepository.create(createUserDto);
     await this.userRepository.save(entity);
     return entity;

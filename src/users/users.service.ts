@@ -16,7 +16,10 @@ export class UsersService {
   }
 
   create(createUserDto: CreateUserDto) {
-    return this.storeService.createUser(createUserDto);
+    return this.storeService.createUser(
+      createUserDto.login,
+      createUserDto.password,
+    );
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
