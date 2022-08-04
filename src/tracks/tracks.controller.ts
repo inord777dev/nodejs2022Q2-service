@@ -13,9 +13,10 @@ import {
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('track')
+@ApiBearerAuth('JWT')
 @Controller('track')
 export class TracksController {
   constructor(private readonly tracksService: TracksService) {}

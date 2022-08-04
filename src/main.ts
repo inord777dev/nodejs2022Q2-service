@@ -17,6 +17,10 @@ async function bootstrap() {
     .addTag('favorites')
     .addTag('track')
     .addTag('user')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'JWT',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('doc', app, document);

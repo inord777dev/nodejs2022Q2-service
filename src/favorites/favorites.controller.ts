@@ -7,10 +7,11 @@ import {
   ParseUUIDPipe,
   HttpCode,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { FavoritesService } from './favorites.service';
 
 @ApiTags('favorites')
+@ApiBearerAuth('JWT')
 @Controller('favs')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}

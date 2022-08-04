@@ -1,22 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { StoreService } from 'src/store/store.service';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { SignInDto } from './dto/singIn.dto';
-import { RefreshDto } from './dto/refresh.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly storeService: StoreService) {}
+  constructor(
+    private readonly storeService: StoreService,
+    private jwtService: JwtService,
+  ) {}
 
-  signUp(createUserDto: CreateUserDto) {
-    return this.storeService.createUser(createUserDto);
+  validate(login: string, password: string) {
+    return this.storeService.validate(login, password);
   }
 
-  signIn(signInDto: SignInDto) {
-    return this.storeService.login(signInDto);
+  signUp(login: string, password: string) {
+    return this.storeService.createUser({ login, password });
   }
 
-  refresh(refreshDto: RefreshDto) {
-    return this.storeService.refreshToken(refreshDto);
+  async signIn(login: string, password: string) {
+    const user = await this.validate(login, password);
+    const payload = { login: user.login, sub: user.id };
+    return {
+      accessToken: this.jwtService.sign(payload),
+    };
+  }
+
+  refresh(refreshToken: string) {
+    return {
+      accessToken: '',
+      refreshToken: refreshToken,
+    };
   }
 }
