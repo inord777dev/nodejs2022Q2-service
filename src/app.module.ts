@@ -10,6 +10,8 @@ import { StoreModule } from './store/store.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import configService from './ormconfig';
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionsFilter } from './filter/exception.filter';
 
 @Module({
   imports: [
@@ -23,6 +25,12 @@ import configService from './ormconfig';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+  ],
 })
 export class AppModule {}
