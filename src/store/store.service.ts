@@ -302,13 +302,18 @@ export class StoreService {
       entity = await this.userRepository.create(createUserDto);
     }
     entity.version = 1;
-    const now = new Date();
-    const createdAt =
-      now.getTime() - new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-    entity.createdAt = createdAt;
-    entity.updatedAt = createdAt;
+    const now = this.getNow();
+    entity.createdAt = now;
+    entity.updatedAt = now;
     await this.userRepository.save(entity);
     return entity;
+  }
+
+  getNow() {
+    const now = new Date();
+    return (
+      now.getTime() - new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+    );
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
@@ -324,10 +329,8 @@ export class StoreService {
     }
     entity.password = await bcrypt.hash(updateUserDto.newPassword, this.salt);
     entity.version = entity.version + 1;
-    const now = new Date();
-    const createdAt =
-      now.getTime() - new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-    entity.createdAt = createdAt;
+    const now = this.getNow();
+    entity.createdAt = now;
     await this.userRepository.save(entity);
     return entity;
   }
