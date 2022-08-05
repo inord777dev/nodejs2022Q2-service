@@ -4,22 +4,25 @@ import {
   Controller,
   HttpCode,
   Post,
-  UseGuards,
   UseInterceptors,
   ValidationPipe,
   Request,
 } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { LocalAuthGuard } from './guards/auth.guard.local';
 import { AuthService } from './auth.service';
 import { RefreshDto } from './dto/refresh.dto';
 import { AuthDto } from './dto/auth.dto';
+import { MyLogger } from 'src/logger/logger.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private myLogger: MyLogger,
+  ) {
+    this.myLogger.setContext('AuthController');
+  }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBody({ type: AuthDto })
@@ -34,11 +37,17 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   async signIn(
-    @Request()
     @Body(new ValidationPipe())
     authDto: AuthDto,
+    @Request() req,
   ) {
-    return await this.authService.signIn(authDto.login, authDto.password);
+    this.myLogger.requestShow(req);
+    const result = await this.authService.signIn(
+      authDto.login,
+      authDto.password,
+    );
+    this.myLogger.responseShow(result, req);
+    return result;
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

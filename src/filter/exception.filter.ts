@@ -6,10 +6,13 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { MyLogger } from 'src/logger/logger.service';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+
+  private readonly logger = new MyLogger('Fail');
 
   catch(exception: unknown, host: ArgumentsHost): void {
     // In certain situations `httpAdapter` might not be available in the
@@ -27,9 +30,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
       statusCode: httpStatus,
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
+      message:
+        exception instanceof HttpException
+          ? exception.message
+          : 'Internal Server Error',
     };
 
-    console.log('123');
+    this.logger.error(JSON.stringify(responseBody));
 
     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
