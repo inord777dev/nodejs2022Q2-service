@@ -45,7 +45,7 @@ export class AuthController {
   @ApiBody({ type: RefreshDto })
   @Post('refresh')
   @HttpCode(200)
-  refresh(@Body(new ValidationPipe()) refreshDto: RefreshDto) {
-    return this.authService.refresh(refreshDto.refreshToken);
+  async refresh(@Body(new ValidationPipe()) refreshDto: RefreshDto) {
+    return await this.authService.refresh(refreshDto.refreshToken);
   }
 }

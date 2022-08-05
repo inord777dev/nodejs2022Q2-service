@@ -20,23 +20,26 @@ export class User {
   @Exclude()
   password: string;
 
-  @VersionColumn()
+  @Column()
+  //@VersionColumn()
   version: number; // integer number, increments on update
 
-  @CreateDateColumn({
-    transformer: {
-      to: (value: Date) => value,
-      from: (value: Date) => value.getTime(),
-    },
-  })
+  @Column()
+  // @CreateDateColumn({
+  //   transformer: {
+  //     to: (value: Date) => value,
+  //     from: (value: Date) => value.getTime(),
+  //   },
+  // })
   createdAt: number; // timestamp of creation
 
-  @UpdateDateColumn({
-    transformer: {
-      to: (value: Date) => value,
-      from: (value: Date) => value.getTime(),
-    },
-  })
+  @Column()
+  // @UpdateDateColumn({
+  //   transformer: {
+  //     to: (value: Date) => value,
+  //     from: (value: Date) => value.getTime(),
+  //   },
+  // })
   updatedAt: number; // timestamp of last update
 
   // @OneToMany(() => Favorite, (favorite) => favorite.user)

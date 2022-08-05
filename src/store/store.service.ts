@@ -25,8 +25,11 @@ import { Favorite } from 'src/favorites/entities/favorite.entity';
 import * as bcrypt from 'bcrypt';
 
 const MSG_COMPLETED = 'Completed successfully';
+
 @Injectable()
 export class StoreService {
+  saltRounds = 10;
+  salt: string;
   constructor(
     @InjectRepository(Album)
     private albumRepository: Repository<Album>,
@@ -42,7 +45,11 @@ export class StoreService {
 
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+  ) {
+    bcrypt.genSalt(this.saltRounds).then((salt) => {
+      this.salt = salt;
+    });
+  }
 
   async getByIndex(
     entyties:
@@ -286,10 +293,20 @@ export class StoreService {
   }
 
   async createUser(login: string, password: string) {
-    const saltRounds = 10;
-    const hash = await bcrypt.hash(password, saltRounds);
-    const createUserDto: CreateUserDto = { login, password: hash };
-    const entity = await this.userRepository.create(createUserDto);
+    let entity = await this.getUserByLogin(login);
+    const hash = await bcrypt.hash(password, this.salt);
+    if (entity) {
+      entity.password = hash;
+    } else {
+      const createUserDto: CreateUserDto = { login, password: hash };
+      entity = await this.userRepository.create(createUserDto);
+    }
+    entity.version = 1;
+    const now = new Date();
+    const createdAt =
+      now.getTime() - new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    entity.createdAt = createdAt;
+    entity.updatedAt = createdAt;
     await this.userRepository.save(entity);
     return entity;
   }
@@ -297,15 +314,20 @@ export class StoreService {
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
     const entity = await this.getUser(id);
     if (
-      entity.password !== updateUserDto.oldPassword ||
-      entity.password === updateUserDto.newPassword
+      !(await bcrypt.compare(updateUserDto.oldPassword, entity.password)) ||
+      (await bcrypt.compare(updateUserDto.newPassword, entity.password))
     ) {
       throw new HttpException(
         'Wrong old or new password',
         HttpStatus.FORBIDDEN,
       );
     }
-    entity.password = updateUserDto.newPassword;
+    entity.password = await bcrypt.hash(updateUserDto.newPassword, this.salt);
+    entity.version = entity.version + 1;
+    const now = new Date();
+    const createdAt =
+      now.getTime() - new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    entity.createdAt = createdAt;
     await this.userRepository.save(entity);
     return entity;
   }
