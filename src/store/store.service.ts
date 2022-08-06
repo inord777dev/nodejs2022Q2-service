@@ -23,12 +23,13 @@ import { Repository } from 'typeorm';
 import { Favorite } from 'src/favorites/entities/favorite.entity';
 
 import * as bcrypt from 'bcrypt';
+import { authConstants } from 'src/auth/auth.constants';
 
 const MSG_COMPLETED = 'Completed successfully';
 
 @Injectable()
 export class StoreService {
-  saltRounds = 10;
+  saltRounds = authConstants.cryptSalt;
   salt: string;
   constructor(
     @InjectRepository(Album)

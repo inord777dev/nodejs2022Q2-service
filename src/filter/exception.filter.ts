@@ -12,7 +12,7 @@ import { MyLogger } from 'src/logger/logger.service';
 export class AllExceptionsFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
-  private readonly logger = new MyLogger('Fail');
+  private readonly logger = new MyLogger();
 
   catch(exception: unknown, host: ArgumentsHost): void {
     // In certain situations `httpAdapter` might not be available in the
