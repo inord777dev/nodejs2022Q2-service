@@ -5,17 +5,21 @@ import { Request } from 'express';
 export class MyLogger extends ConsoleLogger {
   requestShow(request: Request) {
     super.log(
-      `Requests {${request.url}, params: ${JSON.stringify(
-        request.params,
-      )}, body: ${JSON.stringify(request.body)}}`,
+      `Requests {url: ${request.originalUrl} method: ${
+        request.method
+      }, params: ${JSON.stringify(request.params)}, body: ${JSON.stringify(
+        request.body,
+      )}}`,
     );
   }
 
   responseShow(response, statuscode) {
-    super.log(`Response ${statuscode} ${JSON.stringify(response)}`);
+    super.log(
+      `Response {statusCode: ${statuscode} body: ${JSON.stringify(response)}}`,
+    );
   }
 
-  errorShow(error: Error) {
-    super.error(`Error ${JSON.stringify(error)}`);
+  errorShow(res) {
+    super.error(`Error ${JSON.stringify(res)}`);
   }
 }

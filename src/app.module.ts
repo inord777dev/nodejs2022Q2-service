@@ -12,7 +12,6 @@ import { AuthModule } from './auth/auth.module';
 import configService from './ormconfig';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './filter/exception.filter';
-import { MyLogger } from './logger/logger.service';
 
 @Module({
   imports: [

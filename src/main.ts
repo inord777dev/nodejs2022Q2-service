@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import 'dotenv/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { MyLogger } from './logger/logger.service';
-import { Logger } from '@nestjs/common';
+import { LoggingInterceptor } from './logger/logger.interceptor';
 
 const port = process.env.PORT || 4000;
 
@@ -12,6 +12,7 @@ async function bootstrap() {
     bufferLogs: true,
   });
   app.useLogger(new MyLogger());
+  app.useGlobalInterceptors(new LoggingInterceptor());
 
   const config = new DocumentBuilder()
     .setTitle('REST service')

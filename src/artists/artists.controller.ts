@@ -20,19 +20,18 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 @ApiTags('artist')
 @Controller('artist')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard)
 export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
   @Get()
   @HttpCode(200)
-  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.artistsService.findAll();
   }
 
   @Get(':id')
   @HttpCode(200)
-  @UseGuards(JwtAuthGuard)
   findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.artistsService.findOne(id);
   }
@@ -40,7 +39,6 @@ export class ArtistsController {
   @ApiBody({ type: CreateArtistDto })
   @Post()
   @HttpCode(201)
-  @UseGuards(JwtAuthGuard)
   create(@Body(new ValidationPipe()) createArtistDto: CreateArtistDto) {
     return this.artistsService.create(createArtistDto);
   }
@@ -48,7 +46,6 @@ export class ArtistsController {
   @ApiBody({ type: UpdateArtistDto })
   @Put(':id')
   @HttpCode(200)
-  @UseGuards(JwtAuthGuard)
   update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body(new ValidationPipe()) updateArtistDto: UpdateArtistDto,
@@ -58,7 +55,6 @@ export class ArtistsController {
 
   @Delete(':id')
   @HttpCode(204)
-  @UseGuards(JwtAuthGuard)
   remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.artistsService.remove(id);
   }
