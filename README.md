@@ -8,7 +8,7 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/inord777dev/nodejs2022Q2-service.git
 ```
 
 ## Installing NPM modules
@@ -20,7 +20,7 @@ npm install
 ## Running application
 
 ```
-npm start
+npm start OR docker-compose up
 ```
 
 After starting the app on port (4000 as default) you can open
