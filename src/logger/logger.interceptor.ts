@@ -10,7 +10,7 @@ import { MyLogger } from './logger.service';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  private readonly logger = new MyLogger('Fail');
+  private readonly logger = new MyLogger();
 
   intercept(context: ExecutionContext, next: CallHandler) {
     const req = context.switchToHttp().getRequest();
